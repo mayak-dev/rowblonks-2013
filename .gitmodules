@@ -7,3 +7,6 @@
 [submodule "ThirdParty/rapidjson"]
 	path = ThirdParty/rapidjson
 	url = https://github.com/Tencent/rapidjson
+[submodule "ThirdParty/inih"]
+	path = ThirdParty/inih
+	url = https://github.com/benhoyt/inih

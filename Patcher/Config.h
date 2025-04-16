@@ -4,9 +4,10 @@ namespace Config
 {
 	extern std::string gameDirectory;
 
-	extern bool readPlayerBetaCookieJar;
+	extern std::vector<std::string> assetOverrides;
+
+	extern bool readModernClientCookieJar;
+	extern std::string robloSecurityCookie;
 
 	void init();
-
-	extern bool initialized;
 }

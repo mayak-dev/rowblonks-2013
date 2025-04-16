@@ -10,11 +10,8 @@
 #include <rapidjson/istreamwrapper.h>
 #include <base64.h>
 
-void RBXCookieJar::read()
+static std::string readModernClientRobloSecurity()
 {
-	if (!Config::readPlayerBetaCookieJar)
-		return;
-
 	// open the cookie jar file
 
 	std::string path;
@@ -67,22 +64,32 @@ void RBXCookieJar::read()
 
 	// extract the .ROBLOSECURITY cookie
 
-	const std::string roblosecurityKey = ".ROBLOSECURITY\t";
+	const std::string robloSecurityKey = ".ROBLOSECURITY\t";
 
-	size_t roblosecurityPos = cookiesDecrypted.find(roblosecurityKey);
-	if (roblosecurityPos == std::string::npos)
-		return;
+	size_t robloSecurityPos = cookiesDecrypted.find(robloSecurityKey);
+	if (robloSecurityPos == std::string::npos)
+		return "";
 
-	roblosecurityPos += roblosecurityKey.size();
+	robloSecurityPos += robloSecurityKey.size();
 
-	size_t roblosecuritySize = cookiesDecrypted.find(';', roblosecurityPos);
-	if (roblosecuritySize == std::string::npos)
-		return;
+	size_t robloSecuritySize = cookiesDecrypted.find(';', robloSecurityPos);
+	if (robloSecuritySize == std::string::npos)
+		return "";
 
-	roblosecuritySize -= roblosecurityPos;
+	robloSecuritySize -= robloSecurityPos;
 
-	std::string roblosecurity = cookiesDecrypted.substr(roblosecurityPos, roblosecuritySize);
+	return cookiesDecrypted.substr(robloSecurityPos, robloSecuritySize);
+}
+
+void RBXCookieJar::setRobloSecurity()
+{
+	std::string robloSecurity;
+
+	if (Config::readModernClientCookieJar)
+		robloSecurity = readModernClientRobloSecurity();
+	else
+		robloSecurity = Config::robloSecurityCookie;
 
 	// authenticate to avoid assetdelivery rate limits
-	InternetSetCookie("https://assetdelivery.roblox.com", ".ROBLOSECURITY", roblosecurity.c_str());
+	InternetSetCookie("https://assetdelivery.roblox.com", ".ROBLOSECURITY", robloSecurity.c_str());
 }

@@ -29,7 +29,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
         // errors from reading cookies should not be fatal
         try
         {
-            RBXCookieJar::read();
+            RBXCookieJar::setRobloSecurity();
         }
         catch (const std::runtime_error& error)
         {

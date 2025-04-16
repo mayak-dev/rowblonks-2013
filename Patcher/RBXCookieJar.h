@@ -2,5 +2,5 @@
 
 namespace RBXCookieJar
 {
-	void read();
+	void setRobloSecurity();
 }

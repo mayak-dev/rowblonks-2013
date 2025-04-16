@@ -4,6 +4,7 @@
 #include "VC90Defs.h"
 #include "LuaApiExtensions.h"
 #include "UrlHelper.h"
+#include "Config.h"
 
 // ===== `RBX::ContentId` member function hooks =====
 
@@ -19,6 +20,27 @@ void __fastcall RBX::ContentId__convertToLegacyContent_hook(RBX::ContentId* _thi
 
 	if (urlHelper.isAssetUrl())
 	{
+		std::string query = urlHelper.query;
+		std::transform(query.begin(), query.end(), query.begin(), std::tolower);
+
+		static const std::string idParam = "id=";
+		size_t idParamPos = query.find(idParam);
+		if (idParamPos != std::string::npos)
+		{
+			size_t idPos = idParamPos + idParam.size();
+			size_t idEndPos = query.find('&', idPos);
+			if (idEndPos == std::string::npos)
+				idEndPos = query.size();
+
+			std::string assetId = query.substr(idPos, idEndPos - idPos);
+			if (std::find(Config::assetOverrides.begin(), Config::assetOverrides.end(), assetId) != Config::assetOverrides.end())
+			{
+				std::string newId = "rbxasset://../extra/assetoverrides/" + assetId;
+				(*vc90::std::string__assign_from_cstr)(reinterpret_cast<vc90::std::string*>(&_this->id), newId.c_str());
+				return;
+			}
+		}
+
 		urlHelper.protocol = "https";
 		urlHelper.hostname = "assetdelivery.roblox.com";
 		urlHelper.path = "v1/asset/";

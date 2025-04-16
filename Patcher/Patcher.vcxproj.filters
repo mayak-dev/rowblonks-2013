@@ -19,6 +19,9 @@
     <Filter Include="ThirdParty\cpp-base64">
       <UniqueIdentifier>{71736d56-492a-446c-a7c9-892ef572c994}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ThirdParty\inih">
+      <UniqueIdentifier>{e50f3a71-29f4-4584-aa3c-da563fbddc1b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -72,6 +75,12 @@
     <ClInclude Include="..\ThirdParty\cpp-base64\base64.h">
       <Filter>ThirdParty\cpp-base64</Filter>
     </ClInclude>
+    <ClInclude Include="..\ThirdParty\inih\cpp\INIReader.h">
+      <Filter>ThirdParty\inih</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\inih\ini.h">
+      <Filter>ThirdParty\inih</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -110,5 +119,14 @@
     <ClCompile Include="..\ThirdParty\cpp-base64\base64.cpp">
       <Filter>ThirdParty\cpp-base64</Filter>
     </ClCompile>
+    <ClCompile Include="..\ThirdParty\inih\cpp\INIReader.cpp">
+      <Filter>ThirdParty\inih</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\inih\ini.c">
+      <Filter>ThirdParty\inih</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cool.ini" />
   </ItemGroup>
 </Project>
