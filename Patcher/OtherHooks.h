@@ -13,8 +13,22 @@ extern scriptHashCheck_t scriptHashCheck_orig;
 
 bool __fastcall scriptHashCheck_hook(void* _this, void*, int a2, int a3);
 
-// ===== ComputeProp null dereference fix =====
-typedef float(__thiscall* computePropNullDerefFix_t)(float* _this);
-extern computePropNullDerefFix_t computePropNullDerefFix_orig;
+// ===== physics fps unlocking =====
 
-float __fastcall computePropNullDerefFix_hook(float* _this);
+typedef int(__cdecl* getPhysicsStepsPerSec_t)();
+extern getPhysicsStepsPerSec_t getPhysicsStepsPerSec_orig;
+
+int __cdecl getPhysicsStepsPerSec_hook();
+
+typedef double(__cdecl* getSecsPerPhysicsStep_t)();
+extern getSecsPerPhysicsStep_t getSecsPerPhysicsStep_orig;
+
+double __cdecl getSecsPerPhysicsStep_hook();
+
+// ===== motor and motor6d fps fix =====
+
+extern void* motor6dJointFpsFix_ptr;
+void motor6dJointFpsFix_hook();
+
+extern void* motorJointFpsFix_ptr;
+void motorJointFpsFix_hook();

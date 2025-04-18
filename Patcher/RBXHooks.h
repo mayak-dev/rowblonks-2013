@@ -29,4 +29,12 @@ namespace RBX
 	// ===== `RBX::Http` member function hooks =====
 	
 	bool __cdecl Http__trustCheck_hook(const char* url);
+
+	// ===== `RBX::HeartbeatTask` member function hooks =====
+
+	RBX::HeartbeatTask* __fastcall HeartbeatTask__constructor_hook(RBX::HeartbeatTask* _this, void*, int a2, int a3);
+
+	// ===== `RBX::RunService` member function hooks =====
+
+	void __fastcall RunService__step_hook(RBX::RunService* _this, void*, double delta);
 }

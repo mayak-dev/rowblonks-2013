@@ -13,7 +13,7 @@ namespace RBX
 		typedef void(__cdecl* initWithPlayerSecurity_t)();
 		extern initWithPlayerSecurity_t initWithPlayerSecurity_orig;
 
-		const auto initWithoutSecurity = reinterpret_cast<void(__cdecl*)()>(ADDRESS_DEFAULT_NETWORK_INIT);
+		const auto initWithoutSecurity = reinterpret_cast<void(__cdecl*)()>(ADDRESS_NETWORK_INITWITHOUTSECURITY);
 
 		// ===== `ClientReplicator` class =====
 
@@ -27,6 +27,7 @@ namespace RBX
 
 		class Replicator__RockyItem;
 
+		// HOOKED (player)
 		typedef bool(__thiscall* Replicator__RockyItem__write_t)(Replicator__RockyItem* _this, void* bitstream);
 		extern Replicator__RockyItem__write_t Replicator__RockyItem__write_orig;
 #endif
@@ -186,6 +187,55 @@ namespace RBX
 
 	class Http;
 
+	// HOOKED
+	// static method
 	typedef bool(__cdecl* Http__trustCheck_t)(const char* url);
 	extern Http__trustCheck_t Http__trustCheck_orig;
+
+	// ===== `HeartbeatTask` class =====
+
+	class HeartbeatTask
+	{
+	private:
+		char padding1[552];
+	public:
+		double fps;
+	};
+
+	// HOOKED
+	typedef HeartbeatTask* (__thiscall* HeartbeatTask__constructor_t)(HeartbeatTask* _this, int a2, int a3);
+	extern HeartbeatTask__constructor_t HeartbeatTask__constructor_orig;
+
+	// ===== `RunService` class =====
+
+	class RunService
+	{
+	private:
+		char padding1[120];
+	public:
+		double elapsedTime;
+	private:
+		char padding2[8];
+	public:
+		double elapsedTimeAtLastStep;
+	private:
+		char padding3[8];
+	public:
+		void* heartbeatSignal;
+	private:
+		char padding4[8];
+	public:
+		void* steppedSignal;
+	};
+
+	// HOOKED
+	typedef void(__thiscall* RunService__step_t)(RunService* _this, double delta);
+	extern RunService__step_t RunService__step_orig;
+
+	// ===== `DataModelJob` class =====
+	
+	class DataModelJob;
+
+	const auto DataModelJob__sleepTime = 
+		reinterpret_cast<void(__thiscall*)(DataModelJob* _this, double* a2, int a3, double fps)>(ADDRESS_DATAMODELJOB_SLEEPTIME);
 }

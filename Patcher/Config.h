@@ -9,5 +9,8 @@ namespace Config
 	extern bool readModernClientCookieJar;
 	extern std::string robloSecurityCookie;
 
+	extern bool fpsUnlocked;
+	extern int desiredFps;
+
 	void init();
 }

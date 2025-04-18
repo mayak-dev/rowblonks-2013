@@ -18,6 +18,9 @@ std::vector<std::string> Config::assetOverrides = {
 bool Config::readModernClientCookieJar;
 std::string Config::robloSecurityCookie;
 
+bool Config::fpsUnlocked;
+int Config::desiredFps;
+
 void Config::init()
 {
 	gameDirectory.resize(MAX_PATH);
@@ -39,4 +42,7 @@ void Config::init()
 
 	readModernClientCookieJar = ini.GetBoolean("Game", "ReadModernClientCookieJar", true);
 	robloSecurityCookie = ini.GetString("Game", "RobloSecurityCookie", "");
+
+	fpsUnlocked = ini.GetBoolean("Rendering", "ExperimentalFpsUnlock", false);
+	desiredFps = ini.GetInteger("Rendering", "DesiredFps", 60);
 }

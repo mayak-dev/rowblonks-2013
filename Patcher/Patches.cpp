@@ -3,8 +3,10 @@
 #include "RBXHooks.h"
 #include "OtherHooks.h"
 
-#ifdef PATCHER_PLAYER
+#if defined(PATCHER_PLAYER)
 #include "PlayerHooks.h"
+#elif defined(PATCHER_STUDIO)
+#include "StudioHooks.h"
 #endif
 
 #include <detours.h>
@@ -36,12 +38,36 @@ static const std::unordered_map<void*, void*> hooks = {
     // ===== `RBX::Http` member function hooks =====
     { &RBX::Http__trustCheck_orig, RBX::Http__trustCheck_hook },
 
+    // ===== `RBX::HeartbeatTask` member function hooks =====
+    { &RBX::HeartbeatTask__constructor_orig, RBX::HeartbeatTask__constructor_hook },
+
+    // ===== `RBX::RunService` member function hooks =====
+    { &RBX::RunService__step_orig, RBX::RunService__step_hook },
+
+#ifdef PATCHER_PLAYER
+    // ===== `CRobloxWnd::RenderRequestJob` member function hooks =====
+    { &CRobloxWnd__RenderRequestJob__sleepTime_orig, CRobloxWnd__RenderRequestJob__sleepTime_hook },
+
+    // ===== `CRobloxWnd::UserInputJob` member function hooks =====
+    { &CRobloxWnd__UserInputJob__sleepTime_orig, CRobloxWnd__UserInputJob__sleepTime_hook },
+#endif
+
+#ifdef PATCHER_STUDIO
+    // ===== `RobloxView::RenderRequestJob` member function hooks =====
+    { &RobloxView__RenderRequestJob__sleepTime_orig, RobloxView__RenderRequestJob__sleepTime_hook },
+#endif
+
     // ===== other hooks =====
     { &invalidRequestCheck_orig, invalidRequestCheck_hook },
     { &scriptHashCheck_orig, scriptHashCheck_hook },
 #ifdef PATCHER_STUDIO
     { &computePropNullDerefFix_orig, computePropNullDerefFix_hook },
 #endif
+
+    { &getPhysicsStepsPerSec_orig, getPhysicsStepsPerSec_hook },
+    { &getSecsPerPhysicsStep_orig, getSecsPerPhysicsStep_hook },
+    { &motor6dJointFpsFix_ptr, motor6dJointFpsFix_hook },
+    { &motorJointFpsFix_ptr, motorJointFpsFix_hook },
 };
 
 #ifdef _DEBUG

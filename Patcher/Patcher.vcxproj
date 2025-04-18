@@ -186,6 +186,10 @@
     <ClInclude Include="RBXCookieJar.h" />
     <ClInclude Include="RBXDefs.h" />
     <ClInclude Include="RBXHooks.h" />
+    <ClInclude Include="StudioHooks.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="UrlHelper.h" />
     <ClInclude Include="VC90Defs.h" />
   </ItemGroup>
@@ -226,6 +230,10 @@
     </ClCompile>
     <ClCompile Include="RBXCookieJar.cpp" />
     <ClCompile Include="RBXHooks.cpp" />
+    <ClCompile Include="StudioHooks.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="UrlHelper.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -2,6 +2,7 @@
 #include "OtherHooks.h"
 #include "Patches.h"
 #include "VC90Defs.h"
+#include "Config.h"
 
 // ===== bypass "invalid request" for some urls =====
 
@@ -23,14 +24,71 @@ bool __fastcall scriptHashCheck_hook(void* _this, void*, int a2, int a3)
 	return true;
 }
 
-// ===== ComputeProp null dereference fix =====
+// ===== physics fps unlocking =====
 
-computePropNullDerefFix_t computePropNullDerefFix_orig = reinterpret_cast<computePropNullDerefFix_t>(ADDRESS_COMPUTEPROP_NULL_DEREF);
+getPhysicsStepsPerSec_t getPhysicsStepsPerSec_orig = reinterpret_cast<getPhysicsStepsPerSec_t>(ADDRESS_PHYSICS_STEPS_PER_SEC);
 
-float __fastcall computePropNullDerefFix_hook(float* _this)
+int __cdecl getPhysicsStepsPerSec_hook()
 {
-	if (_this)
-		return *(_this + 30);
+	if (Config::fpsUnlocked)
+		return Config::desiredFps;
 
-	return 0.0f;
+	return 30;
+}
+
+getSecsPerPhysicsStep_t getSecsPerPhysicsStep_orig = reinterpret_cast<getSecsPerPhysicsStep_t>(ADDRESS_SECS_PER_PHYSICS_STEP);
+
+double __cdecl getSecsPerPhysicsStep_hook()
+{
+	if (Config::fpsUnlocked)
+		return 1.0 / static_cast<double>(Config::desiredFps);
+
+	return 1.0 / 30.0;
+}
+
+// ===== fps fixes for MotorJoint and Motor6DJoint =====
+
+static float getAdjustedMaxVelocity(float maxVelocity)
+{
+	if (Config::fpsUnlocked)
+		return maxVelocity * 30.0f / static_cast<float>(Config::desiredFps);
+
+	return maxVelocity;
+}
+
+void* motor6dJointFpsFix_ptr = reinterpret_cast<void*>(ADDRESS_MOTOR6DJOINT_FPS_FIX);
+void* motor6dJointFpsFix_jumpOut = reinterpret_cast<void*>(ADDRESS_MOTOR6DJOINT_FPS_FIX_JUMPOUT);
+
+void __declspec(naked) motor6dJointFpsFix_hook()
+{
+	__asm
+	{
+		// store adjusted max velocity in st(0)
+		push dword ptr ds:[esi + 0xD0]
+		call getAdjustedMaxVelocity
+		add esp, 4
+
+		// the xmm1 register was set again in getAdjustedMaxVelocity
+		xorps xmm1, xmm1
+
+		// return to original code
+		jmp motor6dJointFpsFix_jumpOut
+	}
+}
+
+void* motorJointFpsFix_ptr = reinterpret_cast<void*>(ADDRESS_MOTORJOINT_FPS_FIX);
+void* motorJointFpsFix_jumpOut = reinterpret_cast<void*>(ADDRESS_MOTORJOINT_FPS_FIX_JUMPOUT);
+
+void __declspec(naked) motorJointFpsFix_hook()
+{
+	__asm
+	{
+		// store adjusted max velocity in st(0)
+		push dword ptr ds:[ecx + 0xA8]
+		call getAdjustedMaxVelocity
+		add esp, 4
+
+		// return to original code
+		jmp motorJointFpsFix_jumpOut
+	}
 }

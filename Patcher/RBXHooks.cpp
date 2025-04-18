@@ -9,7 +9,7 @@
 // ===== `RBX::ContentId` member function hooks =====
 
 RBX::ContentId__convertToLegacyContent_t RBX::ContentId__convertToLegacyContent_orig = 
-	reinterpret_cast<RBX::ContentId__convertToLegacyContent_t>(ADDRESS_CONVERTTOLEGACYCONTENT);
+	reinterpret_cast<RBX::ContentId__convertToLegacyContent_t>(ADDRESS_CONTENTID_CONVERTTOLEGACYCONTENT);
 
 // rebuild asset URLs to use the assetdelivery API
 void __fastcall RBX::ContentId__convertToLegacyContent_hook(RBX::ContentId* _this, void*, vc90::std::string* baseUrl)
@@ -134,4 +134,51 @@ RBX::Http__trustCheck_t RBX::Http__trustCheck_orig =
 bool __cdecl RBX::Http__trustCheck_hook(const char* url)
 {
 	return true;
+}
+
+// ===== `RBX::HeartbeatTask` member function hooks =====
+
+RBX::HeartbeatTask__constructor_t RBX::HeartbeatTask__constructor_orig = 
+	reinterpret_cast<RBX::HeartbeatTask__constructor_t>(ADDRESS_HEARTBEATTASK_CONSTRUCTOR);
+
+RBX::HeartbeatTask* __fastcall RBX::HeartbeatTask__constructor_hook(RBX::HeartbeatTask* _this, void*, int a2, int a3)
+{
+	auto result = RBX::HeartbeatTask__constructor_orig(_this, a2, a3);
+
+	if (Config::fpsUnlocked)
+		result->fps = Config::desiredFps;
+
+	return result;
+}
+
+// ===== `RBX::RunService` member function hooks =====
+
+RBX::RunService__step_t RBX::RunService__step_orig = 
+	reinterpret_cast<RBX::RunService__step_t>(ADDRESS_RUNSERVICE_STEP);
+
+const auto fireHeartbeatSignal = 
+	reinterpret_cast<void(__thiscall*)(void* _this, double* args)>(ADDRESS_FIRE_HEARTBEAT_SIGNAL);
+
+const auto fireSteppedSignal = 
+	reinterpret_cast<void(__thiscall*)(void* _this, double elapsedTime, double delta)>(ADDRESS_FIRE_STEPPED_SIGNAL);
+
+void __fastcall RBX::RunService__step_hook(RBX::RunService* _this, void*, double delta)
+{
+	double elapsedTime = delta + _this->elapsedTime;
+	_this->elapsedTime = elapsedTime;
+
+	double a[2];
+	a[0] = elapsedTime;
+	a[1] = delta;
+	fireHeartbeatSignal(&_this->heartbeatSignal, a);
+
+	// this is a hack so that the Stepped event gets fired about 30 times per second
+	// some places were relying on this event to update the velocity of parts, causing 
+	// them to accelerate faster than they should
+	if (elapsedTime - _this->elapsedTimeAtLastStep >= 1.0 / 30.0)
+	{
+		_this->elapsedTimeAtLastStep = elapsedTime;
+
+		fireSteppedSignal(&_this->steppedSignal, elapsedTime, 1.0 / 30.0);
+	}
 }
