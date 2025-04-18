@@ -83,12 +83,10 @@ static std::string readModernClientRobloSecurity()
 
 void RBXCookieJar::setRobloSecurity()
 {
-	std::string robloSecurity;
+	std::string robloSecurity = Config::robloSecurityCookie;
 
-	if (Config::readModernClientCookieJar)
+	if (Config::readModernClientCookieJar && robloSecurity.empty())
 		robloSecurity = readModernClientRobloSecurity();
-	else
-		robloSecurity = Config::robloSecurityCookie;
 
 	// authenticate to avoid assetdelivery rate limits
 	InternetSetCookie("https://assetdelivery.roblox.com", ".ROBLOSECURITY", robloSecurity.c_str());
