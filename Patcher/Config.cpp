@@ -21,6 +21,9 @@ std::string Config::robloSecurityCookie;
 bool Config::fpsUnlocked;
 int Config::desiredFps;
 
+// this is to help prevent breaking physics
+static const std::array allowedFpsValues = { 30, 60, 120, 240 };
+
 void Config::init()
 {
 	gameDirectory.resize(MAX_PATH);
@@ -45,4 +48,10 @@ void Config::init()
 
 	fpsUnlocked = ini.GetBoolean("Rendering", "ExperimentalFpsUnlock", false);
 	desiredFps = ini.GetInteger("Rendering", "DesiredFps", 60);
+
+	auto fpsIt = std::upper_bound(allowedFpsValues.begin(), allowedFpsValues.end(), desiredFps);
+	if (fpsIt == allowedFpsValues.end())
+		desiredFps = *(fpsIt - 1);
+	else
+		desiredFps = *fpsIt;
 }
