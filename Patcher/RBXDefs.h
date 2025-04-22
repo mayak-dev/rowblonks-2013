@@ -92,6 +92,9 @@ namespace RBX
 	const auto ProtectedString__fromTrustedSource =
 		reinterpret_cast<ProtectedString* (__cdecl*)(void* buf, const std::string& str)>(ADDRESS_PROTECTEDSTRING_FROMTRUSTEDSOURCE);
 
+	const auto ProtectedString__destructor =
+		reinterpret_cast<void(__thiscall*)(ProtectedString* _this)>(ADDRESS_PROTECTEDSTRING_DESTRUCTOR);
+
 	// ===== `ScriptContext` class =====
 
 	class ScriptContext;

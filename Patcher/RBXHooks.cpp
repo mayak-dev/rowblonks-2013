@@ -95,6 +95,8 @@ void __fastcall RBX::DataModel__startCoreScripts_hook(DataModel* _this, void*, A
 
 	auto sc = RBX::DataModel__create__ScriptContext(_this);
 	RBX::ScriptContext__executeInNewThread(sc, 4, source, "magic");
+
+	RBX::ProtectedString__destructor(source);
 }
 
 // ===== `RBX::ScriptContext` member function hooks =====
