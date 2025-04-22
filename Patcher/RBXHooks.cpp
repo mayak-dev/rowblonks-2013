@@ -175,10 +175,12 @@ void __fastcall RBX::RunService__step_hook(RBX::RunService* _this, void*, double
 	// this is a hack so that the Stepped event gets fired about 30 times per second
 	// some places were relying on this event to update the velocity of parts, causing 
 	// them to accelerate faster than they should
-	if (elapsedTime - _this->elapsedTimeAtLastStep >= 1.0 / 30.0)
+
+	double steppedDelta = elapsedTime - _this->elapsedTimeAtLastStep;
+	if (steppedDelta >= 1.0 / 30.0)
 	{
 		_this->elapsedTimeAtLastStep = elapsedTime;
 
-		fireSteppedSignal(&_this->steppedSignal, elapsedTime, 1.0 / 30.0);
+		fireSteppedSignal(&_this->steppedSignal, elapsedTime, steppedDelta);
 	}
 }
