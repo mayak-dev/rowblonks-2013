@@ -2,7 +2,6 @@
 #include "RBXCookieJar.h"
 #include "Config.h"
 
-#include <wininet.h>
 #include <wincrypt.h>
 #include <shlobj.h>
 
@@ -83,11 +82,6 @@ static std::string readModernClientRobloSecurity()
 
 void RBXCookieJar::setRobloSecurity()
 {
-	std::string robloSecurity = Config::robloSecurityCookie;
-
-	if (Config::readModernClientCookieJar && robloSecurity.empty())
-		robloSecurity = readModernClientRobloSecurity();
-
-	// authenticate to avoid assetdelivery rate limits
-	InternetSetCookie("https://assetdelivery.roblox.com", ".ROBLOSECURITY", robloSecurity.c_str());
+	if (Config::readModernClientCookieJar && Config::robloSecurityCookie.empty())
+		Config::robloSecurityCookie = readModernClientRobloSecurity();
 }

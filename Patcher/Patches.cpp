@@ -68,6 +68,7 @@ static const std::unordered_map<void*, void*> hooks = {
     { &getSecsPerPhysicsStep_orig, getSecsPerPhysicsStep_hook },
     { &motor6dJointFpsFix_ptr, motor6dJointFpsFix_hook },
     { &motorJointFpsFix_ptr, motorJointFpsFix_hook },
+    { &InternetOpenA_orig, InternetOpenA_hook },
 };
 
 #ifdef _DEBUG
