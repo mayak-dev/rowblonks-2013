@@ -12,5 +12,7 @@ namespace Config
 	extern bool fpsUnlocked;
 	extern int desiredFps;
 
+	extern bool allowChangingScriptIdentities;
+
 	void init();
 }

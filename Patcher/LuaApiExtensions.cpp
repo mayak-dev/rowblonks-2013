@@ -14,12 +14,11 @@ static int getThreadIdentity(lua_State* L)
 
 static int setThreadIdentity(lua_State* L)
 {
-#ifndef _DEBUG
-	luaL_error(L, "no");
-#else
+	if (!Config::allowChangingScriptIdentities)
+		luaL_error(L, "no");
+
 	int identity = luaL_checkinteger(L, 1);
 	RobloxExtraSpace::get(L)->identity = identity;
-#endif
 
 	return 0;
 }

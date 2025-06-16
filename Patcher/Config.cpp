@@ -24,6 +24,8 @@ int Config::desiredFps;
 // this is to help prevent breaking physics
 static const std::array allowedFpsValues = { 30, 60, 120, 240 };
 
+bool Config::allowChangingScriptIdentities;
+
 void Config::init()
 {
 	gameDirectory.resize(MAX_PATH);
@@ -54,4 +56,6 @@ void Config::init()
 		desiredFps = *(fpsIt - 1);
 	else
 		desiredFps = *fpsIt;
+
+	allowChangingScriptIdentities = ini.GetBoolean("Lua", "AllowChangingScriptIdentities", false);
 }
