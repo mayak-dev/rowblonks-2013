@@ -163,5 +163,10 @@ void Patches::init()
     fillBytes(reinterpret_cast<void*>(ADDRESS_PROGRAMMEMORYCHECKERIMPL_STEP), 0xC3, 1, PAGE_EXECUTE_READWRITE);
 #endif
 
+    // ===== SSAO fix =====
+    // replace JL instruction with JB following the 128mb VRAM check
+    // this makes FRM treat VRAM as unsigned to fix the SSAO toggle
+    fillBytes(reinterpret_cast<void*>(ADDRESS_FRM_SSAO_VRAM_JUMP), 0x72, 1, PAGE_EXECUTE_READWRITE);
+
     initHooks();
 }
